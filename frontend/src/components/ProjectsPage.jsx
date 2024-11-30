@@ -2,6 +2,7 @@ import { FileBox, Pencil, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../store/projects";
+import { useNavigate } from "react-router-dom";
 const menuLinks = [
   {
     id: 1,
@@ -52,6 +53,7 @@ const ProjectCard = () => {
 };
 
 const ProjectsPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects.allProjects);
 
@@ -96,6 +98,7 @@ const ProjectsPage = () => {
               <li
                 key={link.id}
                 className="hover:bg-primary hover:text-neutral-800 transition-colors duration-200 cursor-pointer rounded-md  w-full py-2 px-4"
+                onClick={() => navigate(link.href)}
               >
                 {link.title}
               </li>
