@@ -15,14 +15,20 @@ module.exports = {
 			[
 				{
 					username: "reso-nator",
+					firstName: "Reso",
+					lastName: "Nator",
 					hashedPassword: bcrypt.hashSync("password"),
 				},
 				{
 					username: "FakeUser1",
+					firstName: "Fake",
+					lastName: "User",
 					hashedPassword: bcrypt.hashSync("password2"),
 				},
 				{
 					username: "FakeUser2",
+					firstName: "Faker",
+					lastName: "User",
 					hashedPassword: bcrypt.hashSync("password3"),
 				},
 			],
