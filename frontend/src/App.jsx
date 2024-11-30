@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import * as sessionActions from "./store/session";
+import HomePage from "./components/HomePage";
+import Footer from "./components/Footer";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -18,6 +20,7 @@ function Layout() {
     <>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && <Outlet />}
+      <Footer />
     </>
   );
 }
@@ -29,7 +32,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <h1>Hello!</h1>
+        element: <HomePage />
       }
     ]
   }

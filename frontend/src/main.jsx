@@ -20,7 +20,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ModalProvider>
       <Provider store={store}>
-        <App />
+        <div className="size-full">
+          <App />
+        </div>
         <Modal />
       </Provider>
     </ModalProvider>
