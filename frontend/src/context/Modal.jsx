@@ -24,7 +24,7 @@ export function ModalProvider({ children }) {
     modalContent, // React component to render inside modal
     setModalContent, // function to set the React component to render inside modal
     setOnModalClose, // function to set the callback function called when modal is closing
-    closeModal // function to close the modal
+    closeModal, // function to close the modal
   };
 
   return (
@@ -54,7 +54,7 @@ export function Modal() {
         className="fixed top-0 right-0 bottom-0 left-0 bg-[rgba(0,0,0,0.7)] -z-1"
         onClick={closeModal}
       />
-      <div id="modal-content" className="abolute bg-white">
+      <div id="modal-content" className="absolute bg-neutral-800 max-w-2xl">
         {modalContent}
       </div>
     </div>,

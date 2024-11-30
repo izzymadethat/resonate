@@ -5,6 +5,7 @@ import Navigation from "./components/Navigation";
 import * as sessionActions from "./store/session";
 import HomePage from "./components/HomePage";
 import Footer from "./components/Footer";
+import ProjectsPage from "./components/ProjectsPage";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -32,10 +33,14 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />
-      }
-    ]
-  }
+        element: <HomePage />,
+      },
+      {
+        path: "/projects",
+        element: <ProjectsPage />,
+      },
+    ],
+  },
 ]);
 
 function App() {
