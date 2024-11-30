@@ -51,4 +51,18 @@ router.get("/:projectId", requireAuth, async (req, res) => {
   return res.json(project);
 });
 
+// Create a project
+router.post("/", requireAuth, validateProject, async (req, res) => {
+  const uid = req.user.id;
+  const { title, description } = req.body;
+
+  const project = await Project.create({
+    ownerId: uid,
+    title,
+    description,
+  });
+
+  return res.json(project);
+});
+
 module.exports = router;

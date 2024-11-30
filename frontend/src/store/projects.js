@@ -21,6 +21,13 @@ const getProject = (project) => {
   };
 };
 
+const addProject = (project) => {
+  return {
+    type: ADD_PROJECT,
+    payload: project,
+  };
+};
+
 export const fetchProjects = () => async (dispatch) => {
   const response = await csrfFetch("/api/projects");
   const data = await response.json();
@@ -35,6 +42,16 @@ export const fetchProject = (projectId) => async (dispatch) => {
   return response;
 };
 
+export const createProject = (projectData) => async (dispatch) => {
+  const response = await csrfFetch("/api/projects", {
+    method: "POST",
+    body: JSON.stringify(projectData),
+  });
+  const data = await response.json();
+  dispatch(addProject(data));
+  return response;
+};
+
 const initialState = {
   allProjects: [],
   currentProject: null,
@@ -46,6 +63,8 @@ const projectReducer = (state = initialState, action) => {
       return { ...state, allProjects: action.payload };
     case GET_PROJECT:
       return { ...state, currentProject: action.payload };
+    case ADD_PROJECT:
+      return { ...state, allProjects: [...state.allProjects, action.payload] };
     default:
       return state;
   }
