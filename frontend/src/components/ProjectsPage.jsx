@@ -1,5 +1,7 @@
-import { Pencil, Trash2 } from "lucide-react";
-
+import { FileBox, Pencil, Trash2 } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProjects } from "../store/projects";
 const menuLinks = [
   {
     id: 1,
@@ -50,6 +52,15 @@ const ProjectCard = () => {
 };
 
 const ProjectsPage = () => {
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.projects.allProjects);
+
+  useEffect(() => {
+    if (!projects.length) {
+      dispatch(fetchProjects());
+    }
+  }, [dispatch]);
+
   return (
     <div className="w-full px-8 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-4">
       <section className="md:col-span-2">
@@ -57,10 +68,23 @@ const ProjectsPage = () => {
           My<span className="text-primary">Projects</span>
         </h1>
         <div className="flex flex-col space-y-2">
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
+          {projects.length > 0 ? (
+            <>
+              {projects.map((project) => (
+                <ProjectCard key={project.id} />
+              ))}
+            </>
+          ) : (
+            <div className="text-center bg-neutral-800 p-8">
+              <div className="border-dashed border-2 border-neutral-500 p-8 flex justify-center items-center flex-col gap-2">
+                <FileBox className="text-primary" />
+                <p className="text-neutral-500 text-sm">
+                  You have no projects yet! Get started by creating a new
+                  project
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </section>
       <aside className="bg-neutral-800 h-full flex flex-col justify-between p-12 gap-2">
