@@ -9,7 +9,7 @@ const router = express.Router();
 const validateProject = [
   check("title").exists({ checkFalsy: true }).withMessage("Title Required"),
   check("description")
-    .optional()
+    .optional({ checkFalsy: true })
     .isString()
     .isLength({ min: 3, max: 250 })
     .withMessage("Description must be between 3 and 250 characters"),

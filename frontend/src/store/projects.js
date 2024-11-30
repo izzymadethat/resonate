@@ -47,6 +47,12 @@ export const createProject = (projectData) => async (dispatch) => {
     method: "POST",
     body: JSON.stringify(projectData),
   });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw errorData;
+  }
+
   const data = await response.json();
   dispatch(addProject(data));
   return response;
