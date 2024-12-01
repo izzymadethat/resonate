@@ -28,6 +28,13 @@ const addProject = (project) => {
   };
 };
 
+const editProject = (project) => {
+  return {
+    type: EDIT_PROJECT,
+    payload: project,
+  };
+};
+
 export const fetchProjects = () => async (dispatch) => {
   const response = await csrfFetch("/api/projects");
   const data = await response.json();
@@ -58,6 +65,22 @@ export const createProject = (projectData) => async (dispatch) => {
   return data;
 };
 
+export const updateProject = (projectId, projectData) => async (dispatch) => {
+  const response = await csrfFetch(`/api/projects/${projectId}`, {
+    method: "PUT",
+    body: JSON.stringify(projectData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw errorData;
+  }
+
+  const data = await response.json();
+  dispatch(editProject(data));
+  return data;
+};
+
 const initialState = {
   allProjects: [],
   currentProject: null,
@@ -71,6 +94,13 @@ const projectReducer = (state = initialState, action) => {
       return { ...state, currentProject: action.payload };
     case ADD_PROJECT:
       return { ...state, allProjects: [...state.allProjects, action.payload] };
+    case EDIT_PROJECT:
+      return {
+        ...state,
+        allProjects: state.allProjects.map((project) =>
+          project.id === action.payload.id ? action.payload : project
+        ),
+      };
     default:
       return state;
   }

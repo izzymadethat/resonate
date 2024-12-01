@@ -17,52 +17,100 @@ const validateProject = [
 ];
 
 // Get all user projects
-router.get("/", requireAuth, async (req, res) => {
+router.get("/", requireAuth, async (req, res, next) => {
   const uid = req.user.id;
 
-  const projects = await Project.findAll({
-    where: {
-      ownerId: uid,
-    },
-  });
+  try {
+    const projects = await Project.findAll({
+      where: {
+        ownerId: uid,
+      },
+    });
 
-  return res.json(projects);
+    return res.json(projects);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Get a project by id
-router.get("/:projectId", requireAuth, async (req, res) => {
+router.get("/:projectId", requireAuth, async (req, res, next) => {
   const uid = req.user.id;
   const projectId = req.params.projectId;
 
-  const project = await Project.findByPk(projectId);
+  try {
+    const project = await Project.findByPk(projectId);
 
-  if (!project) {
-    return res.status(404).json({
-      error: "Project couldn't be found",
-    });
+    if (!project) {
+      return res.status(404).json({
+        error: "Project couldn't be found",
+      });
+    }
+
+    if (project.ownerId !== uid) {
+      return res.status(403).json({
+        error: "YOur not authorized to view this project",
+      });
+    }
+
+    return res.json(project);
+  } catch (error) {
+    next(error);
   }
-
-  if (project.ownerId !== uid) {
-    return res.status(403).json({
-      error: "YOur not authorized to view this project",
-    });
-  }
-
-  return res.json(project);
 });
 
 // Create a project
-router.post("/", requireAuth, validateProject, async (req, res) => {
+router.post("/", requireAuth, validateProject, async (req, res, next) => {
   const uid = req.user.id;
   const { title, description } = req.body;
+  try {
+    const project = await Project.create({
+      ownerId: uid,
+      title,
+      description,
+    });
 
-  const project = await Project.create({
-    ownerId: uid,
-    title,
-    description,
-  });
-
-  return res.status(201).json(project);
+    return res.status(201).json(project);
+  } catch (error) {
+    next(error);
+  }
 });
+
+// Update a project
+router.put(
+  "/:projectId",
+  requireAuth,
+  validateProject,
+  async (req, res, next) => {
+    const uid = req.user.id;
+    const projectId = req.params.projectId;
+    const { title, description } = req.body;
+
+    try {
+      const project = await Project.findByPk(projectId);
+
+      if (!project) {
+        return res.status(404).json({
+          error: "Project couldn't be found",
+        });
+      }
+
+      if (project.ownerId !== uid) {
+        return res.status(403).json({
+          error: "You are not authorized to view this project",
+        });
+      }
+
+      project.title = title;
+      project.description = description;
+
+      await project.save();
+
+      return res.json(project);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;
