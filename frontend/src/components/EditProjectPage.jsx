@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProject, updateProject } from "../store/projects";
+import { fetchProject, fetchProjects, updateProject } from "../store/projects";
 import { useDispatch, useSelector } from "react-redux";
 import { Loader2 } from "lucide-react";
 
@@ -9,14 +9,23 @@ const EditProjectPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const project = useSelector((state) => state.projects.currentProject);
-  const [title, setTitle] = useState(project?.title || "");
-  const [description, setDescription] = useState(project?.description || "");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     dispatch(fetchProject(projectId));
+    dispatch(fetchProjects());
   }, [projectId, dispatch]);
+
+  useEffect(() => {
+    if (project) {
+      setTitle(project.title);
+      setDescription(project.description);
+    }
+
+  }, [project]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

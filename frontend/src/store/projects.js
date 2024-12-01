@@ -92,6 +92,15 @@ export const fetchDeleteProject = (projectId) => async (dispatch) => {
   const response = await csrfFetch(`/api/projects/${projectId}`, {
     method: "DELETE",
   })
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw errorData;
+  }
+
+  dispatch(deleteProject(projectId))
+
+  return response
 }
 
 const initialState = {
@@ -120,6 +129,7 @@ const projectReducer = (state = initialState, action) => {
         allProjects: state.allProjects.filter(
           (project) => project.id !== action.payload
         ),
+        currentProject: null
       };
     default:
       return state;

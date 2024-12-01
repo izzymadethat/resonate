@@ -1,8 +1,10 @@
 import { FileBox, Pencil, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProjects } from "../store/projects";
+import { fetchDeleteProject, fetchProjects } from "../store/projects";
 import { useNavigate } from "react-router-dom";
+import OpenModalButton from "./OpenModalButton";
+import DeleteProjectPopup from "./DeleteProjectPopup";
 const menuLinks = [
   {
     id: 1,
@@ -21,17 +23,18 @@ const menuLinks = [
   },
 ];
 
-const ProjectCard = ({ project, navigate }) => {
+const truncateText = (text, limit) =>
+  text.length > limit ? `${text.slice(0, limit)}...` : text;
+
+const ProjectCard = ({ project, onDelete }) => {
+  const navigate = useNavigate();
   return (
     <article className="flex justify-between w-full px-4 py-6 rounded-md cursor-pointer bg-neutral-800 hover:bg-neutral-800/80">
       <div>
         <h3 className="uppercase text-neutral-300">{project.title}</h3>
         <div className="space-y-2 md:flex md:gap-4 md:items-center">
           {project.description && (
-            <p className="text-sm text-neutral-500">
-              {project.description.slice(0, 25)}
-              {project.description.length > 25 && "..."}
-            </p>
+            <p className="text-sm text-neutral-500">{truncateText(project.description, 25)}</p>
           )}
 
           <button
@@ -52,12 +55,16 @@ const ProjectCard = ({ project, navigate }) => {
           />
         </button>
         {/* TODO: Add delete functionality as open modal button */}
-        <button>
-          <Trash2
-            size={32}
-            className="p-2 bg-red-800 rounded-md hover:bg-red-800/90 text-neutral-300"
-          />
-        </button>
+        <OpenModalButton
+          modalComponent={<DeleteProjectPopup projectId={project.id} onDelete={onDelete} />}
+          buttonText={
+            <Trash2
+              size={32}
+              className="p-2 bg-red-800 rounded-md hover:bg-red-800/90 text-neutral-300"
+            />
+          }
+        />
+
       </div>
     </article>
   );
@@ -72,6 +79,11 @@ const ProjectsPage = () => {
     dispatch(fetchProjects());
   }, [dispatch]);
 
+  const handleDelete = async (projectId) => {
+    await dispatch(fetchDeleteProject(projectId));
+    await dispatch(fetchProjects());
+  };
+
   return (
     <div className="grid w-full grid-cols-1 gap-4 px-8 lg:px-12 lg:grid-cols-3">
       <section className="md:col-span-2">
@@ -85,7 +97,7 @@ const ProjectsPage = () => {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  navigate={navigate}
+                  onDelete={handleDelete}
                 />
               ))}
             </>

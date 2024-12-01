@@ -47,14 +47,14 @@ export function Modal() {
   return ReactDOM.createPortal(
     <div
       id="modal"
-      className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center"
+      className="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"
     >
       <div
         id="modal-background"
         className="fixed top-0 right-0 bottom-0 left-0 bg-[rgba(0,0,0,0.7)] -z-1"
         onClick={closeModal}
       />
-      <div id="modal-content" className="absolute bg-neutral-800 max-w-2xl">
+      <div id="modal-content" className="absolute max-w-2xl rounded-md bg-neutral-800">
         {modalContent}
       </div>
     </div>,
