@@ -6,8 +6,13 @@ import { UserCircle2 } from "lucide-react";
 import OpenModalButton from "./OpenModalButton";
 import DeleteProjectPopup from "./DeleteProjectPopup";
 import AddClientFormPopup from "./AddClientFormPopup";
+import EditClientFormPopup from "./EditClientFormPopup";
+import { fetchDeleteClient } from "../store/clients";
 
-const ClientCard = ({ client }) => {
+const ClientCard = ({ client, onDelete }) => {
+  const deleteClient = () => {
+    onDelete(client.id);
+  };
   return (
     <article className="flex flex-col items-center w-full px-4 py-6 space-y-2 rounded-md cursor-pointer bg-neutral-800 hover:bg-neutral-800/80 lg:flex-row justify-evenly lg:justify-between">
       <div className="flex items-center gap-2">
@@ -18,8 +23,12 @@ const ClientCard = ({ client }) => {
         </div>
       </div>
       <div className="flex gap-4 text-sm">
-        <button>Edit Client</button>
-        <button>Delete Client</button>
+        <OpenModalButton
+          buttonText={<span className="text-primary">Edit Client</span>}
+          modalComponent={<EditClientFormPopup projectId={client.projectId} clientId={client.id} />}
+        />
+
+        <button onClick={deleteClient} className="p-2 bg-red-600 rounded-md hover:bg-red-600/80">Delete Client</button>
       </div>
     </article>
   );
@@ -43,6 +52,15 @@ const ViewSingleProjectPage = () => {
       navigate("/projects"); // Navigate to the projects page
     } catch (error) {
       console.error("Failed to delete project:", error);
+    }
+  };
+
+  const handleDeleteClient = async (clientId) => {
+    try {
+      await dispatch(fetchDeleteClient(clientId));
+      await dispatch(fetchProject(projectId));
+    } catch (error) {
+      console.error("Failed to delete client:", error);
     }
   };
 
@@ -87,7 +105,7 @@ const ViewSingleProjectPage = () => {
         {project.Clients.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {project.Clients.map(client => (
-              <ClientCard key={client.id} client={client} />
+              <ClientCard key={client.id} client={client} onDelete={handleDeleteClient} />
             ))}
           </div>
         ) : (

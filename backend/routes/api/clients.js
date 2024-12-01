@@ -28,6 +28,18 @@ const validateClient = [
 
 // TODO: Get All User Clients route standalone
 // Get Project Clients (handled in /api/projects/:projectId)
+
+// Get a client
+router.get("/:clientId", requireAuth, async (req, res, next) => {
+  const { clientId } = req.params;
+  try {
+    const client = await Client.findByPk(clientId);
+    return res.json(client);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Create a client
 router.post("/", requireAuth, validateClient, async (req, res, next) => {
   const uid = req.user.id;
@@ -61,8 +73,8 @@ router.put(
   requireAuth,
   validateClient,
   async (req, res, next) => {
-    const { projectId, clientId } = req.params;
-    const { name, email, avatar } = req.body;
+    const { clientId } = req.params;
+    const { name, email, avatar, projectId } = req.body;
     const uid = req.user.id;
 
     try {
@@ -88,30 +100,16 @@ router.put(
 );
 
 // Delete a client
-router.delete(
-  "/:clientId",
-  requireAuth,
-  validateClient,
-  async (req, res, next) => {
-    const { projectId, clientId } = req.params;
-    const uid = req.user.id;
+router.delete("/:clientId", requireAuth, async (req, res, next) => {
+  const { clientId } = req.params;
 
-    try {
-      const client = await Client.findByPk(clientId, {
-        include: [{ model: Project, where: { id: projectId } }]
-      });
-
-      if (!client || client.Project.ownerId !== uid) {
-        return res.status(404).json({ error: "Client not found" });
-      }
-
-      await client.destroy();
-
-      return res.status(204).json({ message: "Client deleted successfully" });
-    } catch (error) {
-      next(error);
-    }
+  try {
+    const client = await Client.findByPk(clientId);
+    await client.destroy();
+    return res.status(204).json({ message: "Client deleted successfully" });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 module.exports = router;

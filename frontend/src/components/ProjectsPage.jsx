@@ -5,22 +5,23 @@ import { fetchDeleteProject, fetchProjects } from "../store/projects";
 import { useNavigate } from "react-router-dom";
 import OpenModalButton from "./OpenModalButton";
 import DeleteProjectPopup from "./DeleteProjectPopup";
+import { logout } from "../store/session";
 const menuLinks = [
   {
     id: 1,
     title: "Create a Project",
     href: "/projects/new",
   },
-  {
-    id: 2,
-    title: "Create a Client",
-    href: "/clients/new",
-  },
-  {
-    id: 3,
-    title: "View Clients",
-    href: "/clients",
-  },
+  // {
+  //   id: 2,
+  //   title: "Create a Client",
+  //   href: "/clients/new",
+  // },
+  // {
+  //   id: 3,
+  //   title: "View Clients",
+  //   href: "/clients",
+  // },
 ];
 
 const truncateText = (text, limit) =>
@@ -74,7 +75,7 @@ const ProjectsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects.allProjects);
-
+  const user = useSelector((state) => state.session.user);
   useEffect(() => {
     dispatch(fetchProjects());
   }, [dispatch]);
@@ -84,9 +85,13 @@ const ProjectsPage = () => {
     await dispatch(fetchProjects());
   };
 
+  const handleLogout = () => {
+    dispatch(logout()).then(() => navigate("/"));
+  };
+
   return (
-    <div className="grid w-full grid-cols-1 gap-4 px-8 lg:px-12 lg:grid-cols-3">
-      <section className="md:col-span-2">
+    <div className="grid w-full grid-cols-1 gap-4 px-8 lg:px-12 lg:grid-cols-3 xl:max-w-9xl">
+      <section className="xl:ml-24 lg:col-span-2 lg:max-w-2xl">
         <h1 className="mb-8 text-3xl font-extrabold text-center uppercase md:text-left">
           My<span className="text-primary">Projects</span>
         </h1>
@@ -114,7 +119,7 @@ const ProjectsPage = () => {
           )}
         </div>
       </section>
-      <aside className="flex flex-col justify-between h-full gap-2 p-12 bg-neutral-800">
+      <aside className="flex flex-col justify-between h-full gap-2 p-12 bg-neutral-800 xl:mr-24">
         <div>
           <h3 className="text-xl font-extrabold uppercase">Quick Menu</h3>
           <hr className="w-full h-1 border-0 border-t border-neutral-700" />
@@ -131,8 +136,8 @@ const ProjectsPage = () => {
           </ul>
         </div>
         <div className="flex flex-col items-center w-full gap-2 p-8 rounded-md bg-neutral-700">
-          <p>Logged In As: User First Name</p>
-          <button className="px-4 py-2 text-xs rounded-md bg-primary text-neutral-900 hover:bg-primary/90">
+          <p>Logged In As: {user?.username}</p>
+          <button className="px-4 py-2 text-xs rounded-md bg-primary text-neutral-900 hover:bg-primary/90" onClick={handleLogout}>
             Logout
           </button>
         </div>
