@@ -5,3 +5,7 @@
 body {
     @apply bg-[#212121] text-[#e8e8e8]
 }
+
+.hidden {
+    display: none;
+}

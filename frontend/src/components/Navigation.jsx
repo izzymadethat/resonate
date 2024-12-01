@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
 import OpenModalButton from "./OpenModalButton";
@@ -10,9 +10,15 @@ function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
 
   const sessionLinks = sessionUser ? (
-    <li>
-      <ProfileButton user={sessionUser} />
-    </li>
+    <div className="flex items-center gap-4 mt-4 lg:mt-0">
+      <li className="relative ">
+        <ProfileButton user={sessionUser} />
+      </li>
+      <span>|</span>
+      <li>
+        <Link to="/projects" className="uppercase hover:text-primary">Projects</Link>
+      </li>
+    </div>
   ) : (
     <div className="flex gap-4">
       <li>
@@ -31,11 +37,11 @@ function Navigation({ isLoaded }) {
   );
 
   return (
-    <ul className="flex justify-between items-center p-8">
+    <ul className="flex flex-col items-center justify-between p-8 lg:flex-row">
       <li className="flex gap-2">
-        <NavLink to="/" className="flex gap-2 items-center">
-          <Logo className="size-9 transform rotate-12" />
-          <span className="text-3xl uppercase font-extrabold text-transparent bg-gradient-to-r from-primary via-amber-600 to-amber-800 bg-clip-text">
+        <NavLink to="/" className="flex items-center gap-2">
+          <Logo className="transform size-9 rotate-12" />
+          <span className="text-3xl font-extrabold text-transparent uppercase bg-gradient-to-r from-primary via-amber-600 to-amber-800 bg-clip-text">
             Resonate
           </span>
         </NavLink>
