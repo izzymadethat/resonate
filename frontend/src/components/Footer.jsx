@@ -6,15 +6,15 @@ const Footer = () => {
       <hr />
       <div className="flex items-center justify-between">
         <a href="https://isaiahvickers.online" target="_blank" rel="noreferrer" className="font-bold hover:text-primary">Isaiah Vickers</a>
-        <a href="https://github.com/izzymadethat/resonate" target="_blank" rel="noreferrer">View this site's source code</a>
+        <a href="https://github.com/izzymadethat/resonate" target="_blank" rel="noreferrer">View this site&apos;s source code</a>
         <div className="flex gap-2">
-          <a href="https://github.com/izzymadethat" target="_blank" rel="noreferrer">
+          <a href="https://github.com/izzymadethat" target="_blank" rel="noreferrer" className="hover:text-primary">
             <Github />
           </a>
-          <a href="https://linkedin.com/in/isaiah-vickers" target="_blank" rel="noreferrer">
+          <a href="https://linkedin.com/in/isaiah-vickers" target="_blank" rel="noreferrer" className="hover:text-primary" >
             <Linkedin />
           </a>
-          <a href="mailto:isaiah.vickers@outlook.com" target="_blank" rel="noreferrer">
+          <a href="mailto:isaiah.vickers@outlook.com" target="_blank" rel="noreferrer" className="hover:text-primary">
             <Mail />
           </a>
         </div>
