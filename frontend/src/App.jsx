@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import ProjectsPage from "./components/ProjectsPage";
 import CreateProjectPage from "./components/CreateProjectPage";
 import ViewSingleProjectPage from "./components/ViewSingleProjectPage";
+import EditProjectPage from "./components/EditProjectPage";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -35,27 +36,36 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <HomePage />
       },
       {
         path: "/projects",
         children: [
           {
             index: true,
-            element: <ProjectsPage />,
+            element: <ProjectsPage />
           },
           {
             path: "new",
-            element: <CreateProjectPage />,
+            element: <CreateProjectPage />
           },
           {
             path: ":projectId",
-            element: <ViewSingleProjectPage />,
-          },
-        ],
-      },
-    ],
-  },
+            children: [
+              {
+                index: true,
+                element: <ViewSingleProjectPage />
+              },
+              {
+                path: "edit",
+                element: <EditProjectPage />
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]);
 
 function App() {
