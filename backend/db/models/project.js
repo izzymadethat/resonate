@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Project extends Model {
     static associate(models) {
       Project.belongsTo(models.User, { foreignKey: "ownerId" });
+      Project.hasMany(models.Client, { foreignKey: "projectId" });
     }
   }
   Project.init(
