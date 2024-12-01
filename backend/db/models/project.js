@@ -1,35 +1,30 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Project extends Model {
     static associate(models) {
-      Project.belongsTo(models.User, { foreignKey: "ownerId" })
+      Project.belongsTo(models.User, { foreignKey: "ownerId" });
     }
   }
-  Project.init({
-    ownerId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+  Project.init(
+    {
+      ownerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: [3, 50]
+        }
+      },
+      description: DataTypes.STRING
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [3, 50]
-      }
-    },
-    description: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Project',
-    indexes: [
-      {
-        fields: ["ownerId", "title"],
-        unique: true
-      }
-    ]
-  });
+    {
+      sequelize,
+      modelName: "Project"
+    }
+  );
   return Project;
 };
