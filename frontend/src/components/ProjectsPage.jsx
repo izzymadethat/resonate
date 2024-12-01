@@ -21,14 +21,23 @@ const menuLinks = [
   },
 ];
 
-const ProjectCard = () => {
+const ProjectCard = ({ project, navigate }) => {
   return (
     <article className="w-full bg-neutral-800 hover:bg-neutral-800/80 flex justify-between py-6 px-4  cursor-pointer rounded-md">
       <div>
-        <h3 className="text-neutral-300 uppercase">Project Title</h3>
+        <h3 className="text-neutral-300 uppercase">{project.title}</h3>
         <div className="space-y-2 md:flex md:gap-4 md:items-center">
-          <p className="text-sm text-neutral-500">Project Description</p>
-          <button className="bg-primary px-2 py-1 text-xs text-neutral-900 rounded-md hover:bg-primary/90">
+          {project.description && (
+            <p className="text-sm text-neutral-500">
+              {project.description.slice(0, 25)}
+              {project.description.length > 25 && "..."}
+            </p>
+          )}
+
+          <button
+            className="bg-primary px-2 py-1 text-xs text-neutral-900 rounded-md hover:bg-primary/90"
+            onClick={() => navigate(`/projects/${project.id}`)}
+          >
             View Project
           </button>
         </div>
@@ -39,8 +48,10 @@ const ProjectCard = () => {
           <Pencil
             size={32}
             className="hover:text-neutral-300/80 p-2 text-neutral-300 rounded-md"
+            onClick={() => navigate(`/projects/${project.id}/edit`)}
           />
         </button>
+        {/* TODO: Add delete functionality as open modal button */}
         <button>
           <Trash2
             size={32}
@@ -58,9 +69,7 @@ const ProjectsPage = () => {
   const projects = useSelector((state) => state.projects.allProjects);
 
   useEffect(() => {
-    if (!projects.length) {
-      dispatch(fetchProjects());
-    }
+    dispatch(fetchProjects());
   }, [dispatch]);
 
   return (
@@ -73,7 +82,11 @@ const ProjectsPage = () => {
           {projects.length > 0 ? (
             <>
               {projects.map((project) => (
-                <ProjectCard key={project.id} />
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  navigate={navigate}
+                />
               ))}
             </>
           ) : (

@@ -23,7 +23,9 @@ const CreateProjectPage = () => {
         description,
       };
 
-      await dispatch(createProject(projectData));
+      const result = await dispatch(createProject(projectData));
+      const data = await result.json();
+      console.log(data);
       //   navigate(`/projects/${result.id}`);
     } catch (error) {
       const data = await error.json();

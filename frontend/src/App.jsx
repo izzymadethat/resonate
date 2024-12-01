@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import Footer from "./components/Footer";
 import ProjectsPage from "./components/ProjectsPage";
 import CreateProjectPage from "./components/CreateProjectPage";
+import ViewSingleProjectPage from "./components/ViewSingleProjectPage";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
           {
             path: "new",
             element: <CreateProjectPage />,
+          },
+          {
+            path: ":projectId",
+            element: <ViewSingleProjectPage />,
           },
         ],
       },

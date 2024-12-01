@@ -55,7 +55,7 @@ export const createProject = (projectData) => async (dispatch) => {
 
   const data = await response.json();
   dispatch(addProject(data));
-  return response;
+  return data;
 };
 
 const initialState = {

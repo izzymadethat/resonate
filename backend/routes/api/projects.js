@@ -62,7 +62,7 @@ router.post("/", requireAuth, validateProject, async (req, res) => {
     description,
   });
 
-  return res.json(project);
+  return res.status(201).json(project);
 });
 
 module.exports = router;
