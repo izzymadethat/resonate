@@ -13,6 +13,6 @@ router.use(restoreUser);
 router.use("/session", sessionRouter);
 router.use("/users", usersRouter);
 router.use("/projects", projectsRouter);
-router.use("projects/:projectId/clients", clientsRouter);
+router.use("/clients", clientsRouter);
 
 module.exports = router;

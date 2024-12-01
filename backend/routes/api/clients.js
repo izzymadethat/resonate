@@ -19,6 +19,10 @@ const validateClient = [
     .optional({ checkFalsy: true })
     .isURL()
     .withMessage("Photo url is required"),
+  check("projectId")
+    .exists({ checkFalsy: true })
+    .withMessage("Project id is required")
+    .toInt(),
   handleValidationErrors
 ];
 
@@ -26,9 +30,8 @@ const validateClient = [
 // Get Project Clients (handled in /api/projects/:projectId)
 // Create a client
 router.post("/", requireAuth, validateClient, async (req, res, next) => {
-  const projectId = req.params.projectId;
   const uid = req.user.id;
-  const { name, email, avatar } = req.body;
+  const { name, email, avatar, projectId } = req.body;
 
   try {
     const project = await Project.findByPk(projectId);

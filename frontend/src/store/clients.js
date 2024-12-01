@@ -27,8 +27,8 @@ const deleteClient = (clientId) => {
   };
 };
 
-export const fetchAddThunk = (projectId, client) => async (dispatch) => {
-  const response = await csrfFetch(`/api/projects/${projectId}/clients`, {
+export const fetchAddClient = (client) => async (dispatch) => {
+  const response = await csrfFetch(`/api/clients`, {
     method: "POST",
     body: JSON.stringify(client)
   });
