@@ -35,6 +35,13 @@ const editProject = (project) => {
   };
 };
 
+const deleteProject = (projectId) => {
+  return {
+    type: DELETE_PROJECT,
+    payload: projectId,
+  };
+}
+
 export const fetchProjects = () => async (dispatch) => {
   const response = await csrfFetch("/api/projects");
   const data = await response.json();
@@ -81,6 +88,12 @@ export const updateProject = (projectId, projectData) => async (dispatch) => {
   return data;
 };
 
+export const fetchDeleteProject = (projectId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/projects/${projectId}`, {
+    method: "DELETE",
+  })
+}
+
 const initialState = {
   allProjects: [],
   currentProject: null,
@@ -99,6 +112,13 @@ const projectReducer = (state = initialState, action) => {
         ...state,
         allProjects: state.allProjects.map((project) =>
           project.id === action.payload.id ? action.payload : project
+        ),
+      };
+    case DELETE_PROJECT:
+      return {
+        ...state,
+        allProjects: state.allProjects.filter(
+          (project) => project.id !== action.payload
         ),
       };
     default:

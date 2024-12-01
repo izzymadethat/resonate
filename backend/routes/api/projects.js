@@ -113,4 +113,34 @@ router.put(
   }
 );
 
+// Delete a project
+router.delete("/:projectId", requireAuth, async (req, res, next) => {
+  const uid = req.user.id;
+  const projectId = req.params.projectId;
+
+  try {
+    const project = await Project.findByPk(projectId);
+
+    if (!project) {
+      return res.status(404).json({
+        error: "Project couldn't be found",
+      });
+    }
+
+    if (project.ownerId !== uid) {
+      return res.status(403).json({
+        error: "You are not authorized to view this project",
+      });
+    }
+
+    await project.destroy();
+
+    return res.json({
+      message: "Successfully deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;
