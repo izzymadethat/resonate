@@ -72,7 +72,7 @@ const ViewSingleProjectPage = () => {
     <div className="container px-12 py-8 mx-auto space-y-8">
       <section className="flex flex-col items-center lg:flex-row lg:justify-between">
         <div className="text-center lg:text-left">
-          <h2>{project.title}</h2>
+          <h2 className="mb-4 text-3xl lg:mb-0">{project.title}</h2>
           <p className="text-sm">
             {project.description || "No description provided."}
           </p>
