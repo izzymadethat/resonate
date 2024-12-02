@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchProject, fetchProjects, updateProject } from "../store/projects";
 import { useDispatch, useSelector } from "react-redux";
 import { Loader2 } from "lucide-react";
@@ -61,6 +61,7 @@ const EditProjectPage = () => {
       <h1 className="mb-4 text-3xl font-extrabold text-center uppercase lg:mb-8 lg:text-left">
         Edit  <span className="text-primary">Project</span>
       </h1>
+      <Link to={`/projects/${projectId}`} className="text-sm text-center underline text-neutral-400 hover:text-primary">Go back</Link>
       <div className="w-full rounded-md bg-neutral-800">
         <form className="flex flex-col p-8 space-y-6" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-2">
