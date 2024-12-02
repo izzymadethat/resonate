@@ -23,6 +23,9 @@ Resonate is a platform that allows audio professionals to work with their client
 * ORM: Sequelize
 * Database: PostgreSQL (production), SQLite (development)
 
+## MVP Database Schema
+![Database Schema](/images/resonate_db_schema.png)
+
 ## Frontend Routes
 
 * `/`: Home page
