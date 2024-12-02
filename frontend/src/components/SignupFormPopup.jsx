@@ -16,16 +16,18 @@ function SignupFormPopup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const newUser = {
+      email,
+      username,
+      firstName,
+      lastName,
+      password
+    };
+
     if (password === confirmPassword) {
       setErrors({});
       return dispatch(
-        sessionActions.signup({
-          email,
-          username,
-          firstName,
-          lastName,
-          password
-        })
+        sessionActions.signup(newUser)
       )
         .then(closeModal)
         .catch(async (res) => {
@@ -62,6 +64,8 @@ function SignupFormPopup() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            minLength={4}
+            maxLength={30}
             required
             className="w-full px-4 py-2 bg-transparent border rounded-md border-neutral-500 text-neutral-400"
           />
@@ -73,7 +77,8 @@ function SignupFormPopup() {
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            minLength={100}
+            minLength={1}
+            maxLength={100}
             required
             className="w-full px-4 py-2 bg-transparent border rounded-md border-neutral-500 text-neutral-400"
           />
@@ -85,7 +90,8 @@ function SignupFormPopup() {
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            minLength={100}
+            minLength={1}
+            maxLength={100}
             required
             className="w-full px-4 py-2 bg-transparent border rounded-md border-neutral-500 text-neutral-400"
           />
@@ -110,6 +116,8 @@ function SignupFormPopup() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            minLength={6}
+            maxLength={20}
             required
             className="w-full px-4 py-2 bg-transparent border rounded-md border-neutral-500 text-neutral-400"
           />
