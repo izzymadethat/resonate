@@ -1,4 +1,4 @@
-import { AudioLines, X } from "lucide-react";
+import { AudioLines, Inbox, UploadCloud, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -46,26 +46,49 @@ const FileUploader = ({ className }) => {
     };
 
     const removeRejectedFile = fileName => {
-        console.log("Removing", fileName, rejected);
-        setRejected(prevRejected => prevRejected.filter(reject => reject.file.name !== fileName));
+        setRejected(prevRejected => prevRejected.filter(({ file }) => file.name !== fileName));
+    };
+
+    const removeAllFiles = () => {
+        // remove all files including rejected files
+        setFiles([]);
+        setRejected([]);
     };
 
     return (
         <form className="flex flex-col gap-4">
+            {(files.length > 0 || rejected.length > 0) && (
+                <div className="flex items-center justify-end gap-4 lg:justify-start">
+                    <button type="button" className="px-2 py-1 text-sm rounded-md bg-primary hover:bg-primary/90 text-neutral-800" onClick={removeAllFiles}>Clear all</button>
+
+                    <button className="p-2 text-sm border rounded-md border-primary text-neutral-100 hover:bg-primary hover:text-neutral-900">
+                        Upload Files
+                    </button>
+                </div>
+            )}
+
             <div {...getRootProps({
                 className
             })}>
                 <input {...getInputProps()} />
                 {
                     isDragActive ?
-                        <p>Drop the files here ...</p> :
-                        <p>Drag 'n' drop some files here, or click to select files</p>
+                        <div className="flex flex-col items-center justify-center w-full space-y-1 border border-dashed rounded-md cursor-pointer bg-primary/20">
+                            <Inbox className="size-8" />
+                            Add files in this zone...
+                        </div> :
+                        <div className="flex flex-col items-center justify-center w-full py-6 space-y-2 rounded-md cursor-pointer hover:bg-neutral-500/20">
+                            <UploadCloud className="size-8" />
+                            Drag 'n' drop some files here, or click to select files
+                            <p className="text-xs">(Files must be less than 250MB)</p>
+                        </div>
                 }
             </div>
 
             {/* Preview accepted files */}
             {files.length > 0 && (
                 <div>
+
                     <h3 className="font-semibold text-center lg:text-left lg:text-lg text-neutral-100">File{files.length > 1 && "s"} to be uploaded</h3>
                     {files.length > 4 && <button type="button" className="px-2 py-1 text-sm rounded-md bg-primary hover:bg-primary/90 text-neutral-800" onClick={() => toggleShowAllFiles(setShowAllFiles)}>{showAllFiles ? "Show less" : "Show all"}</button>}
 
