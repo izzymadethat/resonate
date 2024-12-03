@@ -13,8 +13,9 @@ export default defineConfig(({ mode }) => ({
   ],
   server: {
     proxy: {
-      "/api": "http://localhost:8000"
+      "/api": "http://backend:8000"
     },
-    port: 3006
+    port: 3006,
+    host: "0.0.0.0"
   }
 }));
