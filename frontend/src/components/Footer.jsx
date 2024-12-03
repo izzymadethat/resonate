@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="container w-full p-8 mx-auto space-y-4">
       <hr />
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-center justify-between gap-4 lg:gap-0 lg:flex-row">
         <a href="https://isaiahvickers.online" target="_blank" rel="noreferrer" className="font-bold hover:text-primary">Isaiah Vickers</a>
         <a href="https://github.com/izzymadethat/resonate" target="_blank" rel="noreferrer">View this site&apos;s source code</a>
         <div className="flex gap-2">
