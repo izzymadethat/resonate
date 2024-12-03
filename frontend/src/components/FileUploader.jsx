@@ -2,6 +2,16 @@ import { AudioLines, Inbox, UploadCloud, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
+function parseFileErrorMessage(error) {
+    if (error.code === "file-too-large") {
+        return "File is larger than 250MB";
+    } else if (error.code === "file-invalid-type") {
+        return "Invalid file type";
+    } else {
+        return "Unknown error. File could not be uploaded";
+    }
+}
+
 const FileCard = ({ file, onClick, onRemove }) => {
     return (
         <li key={file.name} className="relative w-full h-full p-6 transition-transform duration-200 rounded-md cursor-pointer bg-neutral-800 hover:scale-95">
@@ -32,7 +42,7 @@ const FileUploader = ({ className }) => {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop, accept: {
-            "audio/*": ["*"]
+            "audio/*": []
         },
         maxSize: 250000 * 1024
     });
@@ -55,15 +65,26 @@ const FileUploader = ({ className }) => {
         setRejected([]);
     };
 
+    const handleSubmitFiles = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        files.forEach(file => formData.append("file", file));
+
+        console.log(formData.getAll("file"));
+    };
+
     return (
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmitFiles}>
             {(files.length > 0 || rejected.length > 0) && (
                 <div className="flex items-center justify-end gap-4 lg:justify-start">
                     <button type="button" className="px-2 py-1 text-sm rounded-md bg-primary hover:bg-primary/90 text-neutral-800" onClick={removeAllFiles}>Clear all</button>
 
-                    <button className="p-2 text-sm border rounded-md border-primary text-neutral-100 hover:bg-primary hover:text-neutral-900">
+                    <button disabled={files.length === 0} className={"p-2 text-sm border rounded-md border-primary text-neutral-100 hover:bg-primary hover:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-neutral-100"}>
                         Upload Files
                     </button>
+
+
                 </div>
             )}
 
@@ -73,14 +94,14 @@ const FileUploader = ({ className }) => {
                 <input {...getInputProps()} />
                 {
                     isDragActive ?
-                        <div className="flex flex-col items-center justify-center w-full space-y-1 border border-dashed rounded-md cursor-pointer bg-primary/20">
+                        <div className="flex flex-col items-center justify-center w-full py-6 space-y-1 border border-dashed rounded-md cursor-pointer bg-primary/20">
                             <Inbox className="size-8" />
                             Add files in this zone...
                         </div> :
                         <div className="flex flex-col items-center justify-center w-full py-6 space-y-2 rounded-md cursor-pointer hover:bg-neutral-500/20">
                             <UploadCloud className="size-8" />
                             Drag 'n' drop some files here, or click to select files
-                            <p className="text-xs">(Files must be less than 250MB)</p>
+                            <p className="text-xs">(Only audio files are allowed. Files must be less than 250MB)</p>
                         </div>
                 }
             </div>
@@ -102,6 +123,7 @@ const FileUploader = ({ className }) => {
                                             <X />
                                         </button>
                                         <p className="mt-2 text-sm font-medium text-neutral-300">{file.name}</p>
+                                        <span className="text-sm font-medium text-primary">{file.size / 1024 / 1024 > 1 ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : `${(file.size / 1024).toFixed(2)} KB`}</span>
                                     </li>
                                 ))}
 
@@ -113,6 +135,7 @@ const FileUploader = ({ className }) => {
                                             <X />
                                         </button>
                                         <p className="mt-2 text-sm font-medium text-neutral-300">{file.name}</p>
+                                        <span className="text-sm font-medium text-primary">{file.size / 1024 / 1024 > 1 ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : `${(file.size / 1024).toFixed(2)} KB`}</span>
                                     </li>
                                 ))}
                                 {files.length > 4 && (
@@ -143,7 +166,7 @@ const FileUploader = ({ className }) => {
                                             </button>
                                             <ul>
                                                 {errors.map(error => (
-                                                    <li key={error.code} className="text-xs text-red-600">{error.message}</li>
+                                                    <li key={error.code} className="text-xs text-red-600">{parseFileErrorMessage(error)}</li>
                                                 ))}
                                             </ul>
                                         </li>
@@ -161,7 +184,7 @@ const FileUploader = ({ className }) => {
                                                     </button>
                                                     <ul>
                                                         {errors.map(err => (
-                                                            <li key={err.code} className="text-xs text-red-600">{err.message}</li>
+                                                            <li key={err.code} className="text-xs text-red-600">{parseFileErrorMessage(err)}</li>
                                                         ))}
                                                     </ul>
                                                 </li>
