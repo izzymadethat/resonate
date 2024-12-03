@@ -16,14 +16,14 @@ const ClientCard = ({ client, onDelete }) => {
   };
   return (
     <article className="flex flex-col items-center w-full px-4 py-6 space-y-2 rounded-md cursor-pointer bg-neutral-800 hover:bg-neutral-800/80 lg:flex-row justify-evenly lg:justify-between">
-      <div className="flex items-center gap-2">
-        <UserCircle2 size={56} />
-        <div>
-          <h3>{client.name}</h3>
-          <p>{client.email}</p>
+      <div className="flex flex-col items-center gap-2 lg:flex-row">
+        <UserCircle2 className="size-8 lg:size-14" />
+        <div className="text-center lg:text-left">
+          <h3 className="font-semibold">{client.name}</h3>
+          <p className="text-sm">{client.email}</p>
         </div>
       </div>
-      <div className="flex gap-4 text-sm">
+      <div className="flex flex-col gap-4 text-sm lg:flex-row">
         <OpenModalButton
           buttonText={<span className="text-primary">Edit Client</span>}
           modalComponent={<EditClientFormPopup projectId={client.projectId} clientId={client.id} />}
@@ -70,7 +70,7 @@ const ViewSingleProjectPage = () => {
   }
 
   return (
-    <div className="container px-12 py-8 mx-auto space-y-8">
+    <div className="container px-24 py-8 mx-auto space-y-8">
       <section className="flex flex-col items-center lg:flex-row lg:justify-between">
         <div className="text-center lg:text-left">
           <h2 className="mb-4 text-3xl lg:mb-0">{project.title}</h2>
@@ -88,8 +88,8 @@ const ViewSingleProjectPage = () => {
           />
         </div>
       </section>
-      <div className="grid items-start grid-cols-1 gap-8 lg:gap-24 lg:grid-cols-3">
-        <section className="h-full space-y-4 lg:col-span-2">
+      <div className="flex flex-col gap-8">
+        <section className="h-full space-y-4">
           <div
             className="flex justify-between items:center lg:justify-start lg:gap-4"
           >
@@ -123,11 +123,11 @@ const ViewSingleProjectPage = () => {
           }
 
         </section>
-        <section className="container h-full space-y-2 border lg:col-span-1">
-          <h2 className="mb-2 text-xl font-extrabold uppercase pointer-events-none text-neutral-300">
+        <section className="container space-y-2">
+          <h2 className="mb-6 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
             Upload File(s)
           </h2>
-          <FileUploader />
+          <FileUploader className="w-full max-w-2xl p-10 text-sm border border-dashed rounded-md cursor-pointer lg:p-16 border-neutral-200 lg:text-base" />
         </section>
       </div>
     </div>
