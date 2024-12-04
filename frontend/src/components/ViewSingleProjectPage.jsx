@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchDeleteProject, fetchProject, fetchProjects } from "../store/projects";
-import { UserCircle2 } from "lucide-react";
+import { Download, File, UserCircle2 } from "lucide-react";
 import OpenModalButton from "./OpenModalButton";
 import DeleteProjectPopup from "./DeleteProjectPopup";
 import AddClientFormPopup from "./AddClientFormPopup";
@@ -10,6 +10,23 @@ import EditClientFormPopup from "./EditClientFormPopup";
 import { fetchDeleteClient } from "../store/clients";
 import FileUploader from "./FileUploader";
 import { fetchFiles } from "../store/files";
+
+function parseFileType(type) {
+  const extension = type.split("/")[1];
+  switch (extension) {
+    case "mpeg":
+      return "mp3";
+    case "wave":
+    case "wav":
+      return "wav";
+    case "ogg":
+      return "ogg";
+    case "m4a":
+      return "m4a";
+    default:
+      return type;
+  }
+}
 
 const ClientCard = ({ client, onDelete }) => {
   const deleteClient = () => {
@@ -33,6 +50,70 @@ const ClientCard = ({ client, onDelete }) => {
         <button onClick={deleteClient} className="p-2 bg-red-600 rounded-md hover:bg-red-600/80">Delete Client</button>
       </div>
     </article>
+  );
+};
+
+const FilesTable = ({ files }) => {
+  return (
+    <section className="container w-full px-4 overflow-x-auto">
+      <div className="sm:flex sm:items-center sm:justify-between">
+        <h2 className="mb-2 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
+          Files on this Project
+        </h2>
+        <div className="flex items-center mt-4">
+          <button className="flex items-center w-1/2 px-5 py-2 text-sm transition-colors duration-200 rounded-md text-neutral-800 bg-primary hover:bg-primary/90 sm:w-auto">
+            <Download size={24} className="mr-2 " />
+            <span>Download All</span></button>
+        </div>
+      </div>
+
+      <div className="flex flex-col mt-6 ">
+        <div className="overflow-x-auto ">
+          <div className="inline-block min-w-full py-2 align-middle">
+            <div className="overflow-hidden border border-neutral-800">
+              <table className="min-w-full divide-y rounded-md divide-primary">
+                <thead className="bg-neutral-800 ">
+                  <tr>
+                    <th scope="col" className="px-4 py-3.5 text-sm font-bold text-left  text-neutral-100">
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" className="border rounded text-primary border-primary" />
+                        <span>File Name</span>
+                      </div>
+                    </th>
+                    <th scope="col" className="px-12 py-3.5 text-sm font-bold text-left text-neutral-100">File Type</th>
+                    <th scope="col" className="px-12 py-3.5 text-sm font-bold text-left text-neutral-100">File Size</th>
+                    <th scope="col" className="px-12 py-3.5 text-sm font-bold text-left text-neutral-100">Date Uploaded</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y bg-neutral-800 divide-primary/20">
+                  {files.map((file) => (
+                    <tr key={file.id}>
+                      <td className="p-4 text-sm font-medium text-neutral-200 whitespace-nowrap">
+                        <div className="inline-flex items-center gap-3">
+                          <input type="checkbox" className="border rounded text-primary border-primary" />
+                          <div className="flex items-center gap-2">
+                            <File className="size-4 text-primary" />
+
+                            <span>{file.name}</span>
+
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-sm text-right border border-primary/50">{parseFileType(file.type)}</td>
+                      <td className="px-4 py-2 text-sm font-bold text-right border text-primary border-primary/50">{(file.size / 1024 / 1024).toFixed(2)} MB</td>
+                      <td className="px-4 py-2 text-sm text-right border border-primary/50">{new Date(file.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </section>
   );
 };
 
@@ -127,15 +208,29 @@ const ViewSingleProjectPage = () => {
           }
 
         </section>
-        {/* View Project Files */}
+        <div className="flex flex-col w-full gap-8">
+          {/* View Project Files */}
+          <section className="w-full">
 
-        {/* Upload Files */}
-        <section className="container space-y-2">
-          <h2 className="mb-6 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
-            Upload File(s)
-          </h2>
-          <FileUploader className="w-full max-w-2xl p-10 text-sm border border-dashed rounded-md cursor-pointer lg:p-16 border-neutral-200 lg:text-base" projectId={project.id} />
-        </section>
+            {files.length > 0 ? (
+              <FilesTable files={files} />
+            ) : (
+              <section className="flex items-center justify-center h-64 p-8 rounded-md lg:mx-auto bg-neutral-800">
+                <div className="flex flex-col items-center w-full h-full gap-4 p-12 text-sm italic border border-dashed rounded-md border-neutral-400 text-neutral-300">
+                  <File size={64} className="text-primary/70" />
+                  No files uploaded for this project. Shall we start?
+                </div>
+              </section>
+            )}
+          </section>
+          {/* Upload Files */}
+          <section className="container space-y-2">
+            <h2 className="mb-6 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
+              Upload File(s)
+            </h2>
+            <FileUploader className="w-full max-w-2xl p-10 text-sm border border-dashed rounded-md cursor-pointer lg:p-16 border-neutral-200 lg:text-base" projectId={project.id} />
+          </section>
+        </div>
       </div>
     </div>
   );
