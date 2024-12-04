@@ -1,6 +1,8 @@
 import { AudioLines, Inbox, UploadCloud, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useDispatch } from "react-redux";
+import { uploadFiles } from "../store/files";
 
 function parseFileErrorMessage(error) {
     if (error.code === "file-too-large") {
@@ -12,24 +14,27 @@ function parseFileErrorMessage(error) {
     }
 }
 
-const FileCard = ({ file, onClick, onRemove }) => {
-    return (
-        <li key={file.name} className="relative w-full h-full p-6 transition-transform duration-200 rounded-md cursor-pointer bg-neutral-800 hover:scale-95">
-            <AudioLines className="text-primary lg:size-10" />
-            <button type="button" className="absolute z-30 p-1 rounded-full hover:bg-red-600 top-2 right-2" onClick={() => removeFile(file.name)}>
-                <X />
-            </button>
-            <p className="mt-2 text-sm font-medium text-neutral-300">{file.name}</p>
-        </li>
-    );
-};
+// const FileCard = ({ file, onClick, onRemove }) => {
+//     return (
+//         <li key={file.name} className="relative w-full h-full p-6 transition-transform duration-200 rounded-md cursor-pointer bg-neutral-800 hover:scale-95">
+//             <AudioLines className="text-primary lg:size-10" />
+//             <button type="button" className="absolute z-30 p-1 rounded-full hover:bg-red-600 top-2 right-2" onClick={() => removeFile(file.name)}>
+//                 <X />
+//             </button>
+//             <p className="mt-2 text-sm font-medium text-neutral-300">{file.name}</p>
+//         </li>
+//     );
+// };
 
-const FileUploader = ({ className }) => {
+const FileUploader = ({ className, projectId }) => {
+    const dispatch = useDispatch();
     const [files, setFiles] = useState([]);
     const [rejected, setRejected] = useState([]);
 
     const [showAllFiles, setShowAllFiles] = useState(false);
     const [showAllRejected, setShowAllRejected] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+
     const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
         if (acceptedFiles?.length) {
             setFiles(prevFiles => [...acceptedFiles.map(file => Object.assign(file, { preview: URL.createObjectURL(file) })), ...prevFiles,]);
@@ -65,13 +70,21 @@ const FileUploader = ({ className }) => {
         setRejected([]);
     };
 
-    const handleSubmitFiles = (e) => {
+    const handleSubmitFiles = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
         files.forEach(file => formData.append("file", file));
 
-        console.log(formData.getAll("file"));
+        // console.log(formData.get("projectId"));
+
+        const res = await dispatch(uploadFiles(projectId, formData));
+
+        if (res.ok) {
+            setFiles([]);
+            setRejected([]);
+            alert("Files uploaded successfully");
+        }
     };
 
     return (

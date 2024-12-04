@@ -127,7 +127,7 @@ const ViewSingleProjectPage = () => {
           <h2 className="mb-6 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
             Upload File(s)
           </h2>
-          <FileUploader className="w-full max-w-2xl p-10 text-sm border border-dashed rounded-md cursor-pointer lg:p-16 border-neutral-200 lg:text-base" />
+          <FileUploader className="w-full max-w-2xl p-10 text-sm border border-dashed rounded-md cursor-pointer lg:p-16 border-neutral-200 lg:text-base" projectId={project.id} />
         </section>
       </div>
     </div>
