@@ -9,6 +9,7 @@ import AddClientFormPopup from "./AddClientFormPopup";
 import EditClientFormPopup from "./EditClientFormPopup";
 import { fetchDeleteClient } from "../store/clients";
 import FileUploader from "./FileUploader";
+import { fetchFiles } from "../store/files";
 
 const ClientCard = ({ client, onDelete }) => {
   const deleteClient = () => {
@@ -40,10 +41,12 @@ const ViewSingleProjectPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const project = useSelector((state) => state.projects.currentProject);
+  const files = useSelector(state => state.files.files);
 
   useEffect(() => {
     dispatch(fetchProjects());
     dispatch(fetchProject(projectId));
+    dispatch(fetchFiles(projectId));
   }, [dispatch, projectId]);
 
   const handleDelete = async (projectId) => {
@@ -89,6 +92,7 @@ const ViewSingleProjectPage = () => {
         </div>
       </section>
       <div className="flex flex-col gap-8">
+        {/* View Clients */}
         <section className="h-full space-y-4">
           <div
             className="flex justify-between items:center lg:justify-start lg:gap-4"
@@ -123,6 +127,9 @@ const ViewSingleProjectPage = () => {
           }
 
         </section>
+        {/* View Project Files */}
+
+        {/* Upload Files */}
         <section className="container space-y-2">
           <h2 className="mb-6 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
             Upload File(s)

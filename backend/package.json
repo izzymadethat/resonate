@@ -12,7 +12,7 @@
     "model:create": "npx sequelize model:generate",
     "create-migration": "npx sequelize migration:generate",
     "migrate": "npx dotenv sequelize db:migrate",
-    "migrate:down": "npx dotenv sequelize db:migrate:undo",
+    "migrate:down": "npx dotenv sequelize db:migrate:undo:all",
     "seed": "npx dotenv sequelize db:seed:all",
     "db:reset": "rm -rf db/dev.db && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
   },

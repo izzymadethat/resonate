@@ -31,8 +31,8 @@ const removeAllFiles = () => ({
   type: REMOVE_ALL_FILES
 });
 
-export const fetchFiles = () => async (dispatch) => {
-  const res = await csrfFetch("/api/files");
+export const fetchFiles = (projectId) => async (dispatch) => {
+  const res = await csrfFetch(`/api/projects/${projectId}/files`);
   if (res.ok) {
     const files = await res.json();
     dispatch(getFiles(files));
@@ -63,6 +63,7 @@ export const uploadFiles = (projectId, filesData) => async (dispatch) => {
 
   if (res.ok) {
     const files = await res.json();
+    console.log(files);
     dispatch(addFiles(files));
   }
 

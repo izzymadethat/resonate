@@ -4,13 +4,14 @@ const {
   S3Client,
   GetObjectCommand,
   ListObjectsV2Command,
-  PutObjectCommand
+  HeadObjectCommand
 } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { s3 } = require("../../config");
-const { v4: uuid } = require("uuid");
+const { requireAuth } = require("../../utils/auth");
+const { Project, File } = require("../../db/models");
 
 const s3Client = new S3Client({
   region: s3.region,
@@ -41,16 +42,17 @@ const upload = multer({
 });
 
 // Get all files
-router.get("/", async (req, res, next) => {
+router.get("/", requireAuth, async (req, res, next) => {
+  const user = req.user;
+  const projectId = req.params.projectId;
   try {
     const params = {
       Bucket: s3.bucket,
-      Prefix: "test-folder/"
+      Prefix: `${user.email}/${projectId}/`
     };
     const command = new ListObjectsV2Command(params);
 
     const response = await s3Client.send(command);
-    console.log(response);
     res.send(response);
   } catch (error) {
     next(error);
@@ -78,29 +80,54 @@ router.get("/:name", async (req, res, next) => {
 });
 
 // Upload files
-router.post(
-  "/",
-  upload.fields([{ name: "file" }, { name: "projectId" }]),
-  async (req, res, next) => {
-    if (!req.files) {
-      return res.status(400).json({ message: "No files uploaded" });
-    }
-    /**
-     * Grab the files from the request
-     * Set up a Promise.all() to upload all files to S3
-     * Add to database
-     * If any of the files fail, delete the ones that have been uploaded from S3
-     */
-    const files = req.files || [];
+router.post("/", upload.array("file"), async (req, res, next) => {
+  const { id: userId, email } = req.user;
+  const projectId = req.params.projectId;
+  const files = req.files;
 
-    try {
-      return res
-        .status(201)
-        .json({ message: "Files uploaded successfully", files });
-    } catch (error) {
-      next(error);
-    }
+  if (!files || files.length === 0) {
+    return res.status(400).json({ message: "No files uploaded" });
   }
-);
+
+  // const prefix = `${req.user.email}/${projectId}/`;
+
+  try {
+    // Find project or return error
+    const project = await Project.findByPk(projectId);
+    if (!projectId || !project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const allFilesDetails = files.map((file) => {
+      return {
+        name: file.originalname,
+        size: file.size,
+        url: file.location,
+        type: file.mimetype,
+        userId: userId,
+        projectId: Number(projectId)
+      };
+    });
+
+    // Get file size from AWS and update database with it
+
+    for (let i = 0; i < allFilesDetails.length; i++) {
+      const file = allFilesDetails[i];
+      const command = new HeadObjectCommand({
+        Bucket: s3.bucket,
+        Key: `${email}/${projectId}/${file.name}`
+      });
+
+      const response = await s3Client.send(command);
+      file.size = response.ContentLength;
+    }
+
+    const newFiles = await File.bulkCreate(allFilesDetails);
+
+    res.send(newFiles);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
