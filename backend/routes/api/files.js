@@ -43,17 +43,22 @@ const upload = multer({
 
 // Get all files
 router.get("/", requireAuth, async (req, res, next) => {
-  const user = req.user;
   const projectId = req.params.projectId;
   try {
-    const params = {
-      Bucket: s3.bucket,
-      Prefix: `${user.email}/${projectId}/`
-    };
-    const command = new ListObjectsV2Command(params);
+    const project = await Project.findByPk(projectId);
+    if (!project) {
+      return res.status(404).json({
+        error: "Project couldn't be found"
+      });
+    }
 
-    const response = await s3Client.send(command);
-    res.send(response);
+    const files = await File.findAll({
+      where: {
+        projectId
+      }
+    });
+
+    res.send(files);
   } catch (error) {
     next(error);
   }
