@@ -2,7 +2,7 @@ import { csrfFetch } from "./csrf";
 import Cookies from "js-cookie";
 
 const GET_FILES = "files/GET_FILES";
-const GET_FILE = "files/GET_FILE";
+const GET_STREAM_URL = "files/GET_STREAM_URL";
 const ADD_FILES = "files/ADD_FILES";
 const REMOVE_FILE = "files/REMOVE_FILE";
 const REMOVE_ALL_FILES = "files/REMOVE_ALL_FILES";
@@ -12,8 +12,8 @@ const getFiles = (files) => ({
   payload: files
 });
 
-const getFile = (file) => ({
-  type: GET_FILE,
+const getFileStream = (file) => ({
+  type: GET_STREAM_URL,
   payload: file
 });
 
@@ -41,11 +41,13 @@ export const fetchFiles = (projectId) => async (dispatch) => {
   return res;
 };
 
-export const fetchFile = (fileName) => async (dispatch) => {
-  const res = await csrfFetch(`/api/files/${fileName}`);
+export const fetchFileStreamUrl = (projectId, fileName) => async (dispatch) => {
+  const res = await csrfFetch(
+    `/api/projects/${projectId}/files/${fileName}/stream`
+  );
   if (res.ok) {
     const file = await res.json();
-    dispatch(getFile(file));
+    dispatch(getFileStream(file));
   }
 
   return res;
@@ -88,14 +90,23 @@ export const deleteFile = (fileName) => async (dispatch) => {
 
 const initialState = {
   files: [],
-  file: null
+  file: {
+    name: "",
+    size: 0,
+    duration: 0,
+    isPlaying: false,
+    currentTime: 0,
+    type: "",
+    streamUrl: "",
+    downloadUrl: ""
+  }
 };
 
 const filesReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_FILES:
       return { ...state, files: action.payload };
-    case GET_FILE:
+    case GET_STREAM_URL:
       return { ...state, file: action.payload };
     case ADD_FILES:
       return { ...state, files: [...state.files, ...action.payload] };

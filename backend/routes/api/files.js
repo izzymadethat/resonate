@@ -11,7 +11,7 @@ const multerS3 = require("multer-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { s3 } = require("../../config");
 const { requireAuth } = require("../../utils/auth");
-const { Project, File } = require("../../db/models");
+const { Project, File, User } = require("../../db/models");
 
 const s3Client = new S3Client({
   region: s3.region,
@@ -64,21 +64,52 @@ router.get("/", requireAuth, async (req, res, next) => {
   }
 });
 
-// Get a specific file
-router.get("/:name", async (req, res, next) => {
+// Get a specific file to stream
+// Route: /api/projects/:projectId/files/:name/stream
+router.get("/:name/stream", async (req, res, next) => {
+  const { projectId, name } = req.params;
+
   try {
+    // find project to return userId
+    const project = await Project.findByPk(projectId, {
+      include: [
+        {
+          model: User,
+          attributes: ["email"]
+        }
+      ]
+    });
+
+    if (!project) {
+      return res.status(404).json({
+        error: "Project couldn't be found"
+      });
+    }
+
+    const file = await File.findOne({
+      where: {
+        name
+      }
+    });
+
+    if (!file) {
+      return res.status(404).json({
+        error: "File couldn't be found"
+      });
+    }
+
     const params = {
       Bucket: s3.bucket,
-      Key: `test-folder/${req.params.name}`
+      Key: `${project.User.email}/${projectId}/${req.params.name}`
     };
 
     const command = new GetObjectCommand(params);
 
     const url = await getSignedUrl(s3Client, command, {
-      expiresIn: 3600
+      expiresIn: 60
     });
 
-    res.send(`<audio controls src="${url}"></audio>`);
+    res.json({ file, streamUrl: url });
   } catch (error) {
     next(error);
   }

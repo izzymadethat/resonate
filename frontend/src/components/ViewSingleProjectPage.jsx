@@ -9,7 +9,7 @@ import AddClientFormPopup from "./AddClientFormPopup";
 import EditClientFormPopup from "./EditClientFormPopup";
 import { fetchDeleteClient } from "../store/clients";
 import FileUploader from "./FileUploader";
-import { fetchFiles } from "../store/files";
+import { fetchFiles, fetchFileStreamUrl } from "../store/files";
 import AudioPlayer from "./AudioPlayer";
 
 function parseFileType(type) {
@@ -54,7 +54,7 @@ const ClientCard = ({ client, onDelete }) => {
   );
 };
 
-const FilesTable = ({ files }) => {
+const FilesTable = ({ projectId, files }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const dispatch = useDispatch();
 
@@ -73,6 +73,10 @@ const FilesTable = ({ files }) => {
     } else {
       setSelectedFiles(selectedFiles.filter((id) => id !== fileId));
     }
+  };
+
+  const handleGetFileStreamUrl = async (fileName) => {
+    dispatch(fetchFileStreamUrl(projectId, fileName));
   };
 
   const handleDeleteFiles = async () => {
@@ -140,7 +144,7 @@ const FilesTable = ({ files }) => {
                           <div className="flex items-center gap-2">
                             <File className="size-4 text-primary" />
 
-                            <span>{file.name}</span>
+                            <span className="transition-transform duration-200 cursor-pointer hover:scale-95" onClick={() => handleGetFileStreamUrl(file.name)}>{file.name}</span>
 
                           </div>
                         </div>
@@ -259,7 +263,7 @@ const ViewSingleProjectPage = () => {
           <section className="w-full">
 
             {files.length > 0 ? (
-              <FilesTable files={files} />
+              <FilesTable files={files} projectId={project.id} />
             ) : (
               <section className="flex items-center justify-center h-64 p-8 rounded-md lg:mx-auto bg-neutral-800">
                 <div className="flex flex-col items-center w-full h-full gap-4 p-12 text-sm italic border border-dashed rounded-md border-neutral-400 text-neutral-300">
