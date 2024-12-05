@@ -4,7 +4,8 @@ const {
   S3Client,
   GetObjectCommand,
   ListObjectsV2Command,
-  HeadObjectCommand
+  HeadObjectCommand,
+  DeleteObjectsCommand
 } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -12,6 +13,7 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { s3 } = require("../../config");
 const { requireAuth } = require("../../utils/auth");
 const { Project, File, User } = require("../../db/models");
+const { where } = require("sequelize");
 
 const s3Client = new S3Client({
   region: s3.region,
@@ -116,6 +118,8 @@ router.get("/:name/stream", async (req, res, next) => {
   }
 });
 
+// TODO: Get a file download link (will involve payments)
+
 // Upload files
 router.post("/", upload.array("file"), async (req, res, next) => {
   const { id: userId, email } = req.user;
@@ -142,7 +146,8 @@ router.post("/", upload.array("file"), async (req, res, next) => {
         url: file.location,
         type: file.mimetype,
         userId: userId,
-        projectId: Number(projectId)
+        projectId: Number(projectId),
+        s3Key: file.key
       };
     });
 
@@ -162,6 +167,54 @@ router.post("/", upload.array("file"), async (req, res, next) => {
     const newFiles = await File.bulkCreate(allFilesDetails);
 
     res.send(newFiles);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Delete a set of files (minimum of 1)
+router.delete("/", async (req, res, next) => {
+  const projectId = req.params.projectId;
+  const { fileIds } = req.body;
+  try {
+    if (!fileIds || fileIds.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No files specified for deletion." });
+    }
+
+    // find project to return userId
+    const project = await Project.findByPk(projectId);
+
+    if (!project) {
+      return res.status(404).json({
+        error: "Project couldn't be found"
+      });
+    }
+
+    // get files from database
+    const files = await File.findAll({ where: { id: fileIds } });
+    if (files.length === 0) {
+      return res.status(404).json({ message: "Files not found" });
+    }
+
+    // prepare s3 delete command
+    const objectsToDelete = files.map((file) => ({ Key: file.s3Key }));
+
+    const deleteParams = {
+      Bucket: s3.bucket,
+      Delete: { Objects: objectsToDelete, Quiet: false }
+    };
+
+    const deleteCommand = new DeleteObjectsCommand(deleteParams);
+
+    // delete files from s3
+    await s3Client.send(deleteCommand);
+
+    // delete files from database
+    await File.destroy({ where: { id: fileIds } });
+
+    res.status(200).json({ message: "Files deleted successfully" });
   } catch (error) {
     next(error);
   }

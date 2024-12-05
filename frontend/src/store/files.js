@@ -4,8 +4,7 @@ import Cookies from "js-cookie";
 const GET_FILES = "files/GET_FILES";
 const GET_STREAM_URL = "files/GET_STREAM_URL";
 const ADD_FILES = "files/ADD_FILES";
-const REMOVE_FILE = "files/REMOVE_FILE";
-const REMOVE_ALL_FILES = "files/REMOVE_ALL_FILES";
+const DELETE_FILES = "files/DELETE_FILES";
 
 const getFiles = (files) => ({
   type: GET_FILES,
@@ -22,14 +21,12 @@ const addFiles = (files) => ({
   payload: files
 });
 
-const removeFile = (fileName) => ({
-  type: REMOVE_FILE,
-  payload: fileName
-});
-
-const removeAllFiles = () => ({
-  type: REMOVE_ALL_FILES
-});
+const removeFiles = (fileIds) => {
+  return {
+    type: DELETE_FILES,
+    payload: fileIds
+  };
+};
 
 export const fetchFiles = (projectId) => async (dispatch) => {
   const res = await csrfFetch(`/api/projects/${projectId}/files`);
@@ -72,17 +69,19 @@ export const uploadFiles = (projectId, filesData) => async (dispatch) => {
   return res;
 };
 
-export const deleteFile = (fileName) => async (dispatch) => {
-  const res = await fetch(`/api/files/${fileName}`, {
+export const deleteFiles = (projectId, fileIds) => async (dispatch) => {
+  const res = await fetch(`/api/projects/${projectId}/files`, {
     method: "DELETE",
     headers: {
-      "XSRF-TOKEN": Cookies.get("XSRF-TOKEN")
+      "XSRF-TOKEN": Cookies.get("XSRF-TOKEN"),
+      "COntent-Type": "application/json"
     },
+    body: JSON.stringify({ fileIds }),
     credentials: "include"
   });
 
   if (res.ok) {
-    dispatch(removeFile(fileName));
+    dispatch(removeFiles(fileIds));
   }
 
   return res;
@@ -115,13 +114,11 @@ const filesReducer = (state = initialState, action) => {
       };
     case ADD_FILES:
       return { ...state, files: [...state.files, ...action.payload] };
-    case REMOVE_FILE:
+    case DELETE_FILES:
       return {
         ...state,
-        files: state.files.filter((file) => file.name !== action.payload)
+        files: state.files.filter((file) => !action.payload.includes(file.id))
       };
-    case REMOVE_ALL_FILES:
-      return { ...state, files: [], file: null };
     default:
       return state;
   }

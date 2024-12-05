@@ -26,7 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       url: DataTypes.STRING,
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      s3Key: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
     },
     {
       sequelize,

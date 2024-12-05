@@ -1,4 +1,4 @@
-import { CircleStop, Pause, Play, StepBack, StepForward, Volume } from "lucide-react";
+import { CircleStop, Pause, Play, StepBack, StepForward } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import WaveSurfer from "wavesurfer.js";
@@ -32,9 +32,12 @@ const AudioPlayer = () => {
                     labelColor: "#fff",
                     labelSize: 12
                 })
-            ]
+            ],
+            backend: "WebAudio"
         });
 
+        const audioUrl = file.streamUrl;
+        console.log("Audio URL loaded:", audioUrl);
         if (file.streamUrl) {
             // Load the audio file into wavesurfer
             wavesurfer.current.load(file.streamUrl);

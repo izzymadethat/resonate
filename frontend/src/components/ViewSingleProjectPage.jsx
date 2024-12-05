@@ -9,7 +9,7 @@ import AddClientFormPopup from "./AddClientFormPopup";
 import EditClientFormPopup from "./EditClientFormPopup";
 import { fetchDeleteClient } from "../store/clients";
 import FileUploader from "./FileUploader";
-import { fetchFiles, fetchFileStreamUrl } from "../store/files";
+import { deleteFiles, fetchFiles, fetchFileStreamUrl } from "../store/files";
 import AudioPlayer from "./AudioPlayer";
 
 function parseFileType(type) {
@@ -81,10 +81,19 @@ const FilesTable = ({ projectId, files }) => {
   };
 
   const handleDeleteFiles = async () => {
+    if (selectedFiles.length === 0) {
+      alert("No files selected for deletion.");
+      return;
+    }
+
     if (window.confirm("Are you sure you want to delete these files? This action cannot be undone!")) {
-      selectedFiles.forEach((fileId) => {
-        console.log(fileId);
-      });
+      const res = await dispatch(deleteFiles(projectId, selectedFiles));
+      if (res.ok) {
+        await dispatch(fetchFiles(projectId));
+        setSelectedFiles([]);
+      } else {
+        alert("Failed to delete files.");
+      }
     }
   };
 
@@ -244,7 +253,7 @@ const ViewSingleProjectPage = () => {
               Clients
             </h2>
             <OpenModalButton
-              buttonText={<button className="px-2 py-1 text-sm rounded-md bg-primary text-neutral-800">Add Client</button>}
+              buttonText={<span className="px-2 py-1 text-sm rounded-md bg-primary text-neutral-800">Add Client</span>}
               modalComponent={<AddClientFormPopup projectId={project.id} />}
 
             />
