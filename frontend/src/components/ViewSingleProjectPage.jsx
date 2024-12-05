@@ -57,6 +57,7 @@ const ClientCard = ({ client, onDelete }) => {
 const FilesTable = ({ projectId, files }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const dispatch = useDispatch();
+  const file = useSelector((state) => state.files.file);
 
   const toggleSelectAll = (e) => {
     if (e.target.checked) {
@@ -89,11 +90,22 @@ const FilesTable = ({ projectId, files }) => {
 
   return (
     <section className="container w-full px-4 overflow-x-auto">
-      <AudioPlayer audioUrl={"/test.mp3"} />
+      {file && file.streamUrl && (
+
+        <div className="w-full space-y-4">
+          <p className="text-sm text-primary">Playing: <span className="italic font-semibold text-neutral-200">{file.metadata.name}</span></p>
+          <AudioPlayer />
+        </div>
+
+      )}
+
       <div className="sm:flex sm:items-center sm:justify-between">
-        <h2 className="mb-2 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
-          Files on this Project
-        </h2>
+        <div>
+          <h2 className="mb-2 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
+            Files on this Project
+          </h2>
+          <p className="text-sm italic text-neutral-400">Click a song title to play it </p>
+        </div>
         <div className="flex items-center gap-2 mt-4">
           {selectedFiles.length > 0 && (
             <button

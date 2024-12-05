@@ -20,7 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 // Security Middleware
 if (!isProduction) {
   // enable cors only in development
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "*"
+    })
+  );
 }
 
 // helmet helps set a variety of headers to better secure your app

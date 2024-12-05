@@ -100,13 +100,14 @@ router.get("/:name/stream", async (req, res, next) => {
 
     const params = {
       Bucket: s3.bucket,
-      Key: `${project.User.email}/${projectId}/${req.params.name}`
+      Key: `${project.User.email}/${projectId}/${req.params.name}`,
+      Expires: 3600
     };
 
     const command = new GetObjectCommand(params);
 
     const url = await getSignedUrl(s3Client, command, {
-      expiresIn: 60
+      expiresIn: 3600
     });
 
     res.json({ file, streamUrl: url });

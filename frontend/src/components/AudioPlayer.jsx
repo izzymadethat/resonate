@@ -1,14 +1,16 @@
 import { CircleStop, Pause, Play, StepBack, StepForward, Volume } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 
 const btnStyle = "bg-primary border-0 text-neutral-800 p-2 rounded-md text-center text-sm inline-block cursor-pointer hover:bg-primary/80";
 
 
-const AudioPlayer = ({ audioUrl }) => {
+const AudioPlayer = () => {
     const waveformRef = useRef(null);
     const wavesurfer = useRef(null);
+    const file = useSelector(state => state.files.file);
 
 
     useEffect(() => {
@@ -33,8 +35,11 @@ const AudioPlayer = ({ audioUrl }) => {
             ]
         });
 
-        // Load the audio file into wavesurfer
-        wavesurfer.current.load(audioUrl);
+        if (file.streamUrl) {
+            // Load the audio file into wavesurfer
+            wavesurfer.current.load(file.streamUrl);
+        }
+
 
         // Clean up wavesurfer when the component unmounts
         return () => {
@@ -42,7 +47,7 @@ const AudioPlayer = ({ audioUrl }) => {
                 wavesurfer.current.destroy();
             }
         };
-    }, [audioUrl]);
+    }, [file.streamUrl]);
 
     // Button functions
     const handlePlayPause = () => {
