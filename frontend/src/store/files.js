@@ -91,12 +91,10 @@ export const deleteFile = (fileName) => async (dispatch) => {
 const initialState = {
   files: [],
   file: {
-    name: "",
-    size: 0,
+    metadata: {},
     duration: 0,
     isPlaying: false,
     currentTime: 0,
-    type: "",
     streamUrl: "",
     downloadUrl: ""
   }
@@ -107,7 +105,14 @@ const filesReducer = (state = initialState, action) => {
     case GET_FILES:
       return { ...state, files: action.payload };
     case GET_STREAM_URL:
-      return { ...state, file: action.payload };
+      return {
+        ...state,
+        file: {
+          ...state.file,
+          metadata: { ...action.payload.file },
+          streamUrl: action.payload.streamUrl
+        }
+      };
     case ADD_FILES:
       return { ...state, files: [...state.files, ...action.payload] };
     case REMOVE_FILE:
