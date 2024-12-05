@@ -7,7 +7,10 @@ if (process.env.NODE_ENV === "production") {
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.addColumn(
-      "Files",
+      {
+        tableName: "Files",
+        schema: options.schema
+      },
       "s3Key",
       {
         type: Sequelize.STRING,
@@ -18,7 +21,13 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    options.tableName = "Files";
-    await queryInterface.removeColumn("Files", "s3Key", options);
+    await queryInterface.removeColumn(
+      {
+        tableName: "Files",
+        schema: options.schema
+      },
+      "s3Key",
+      options
+    );
   }
 };
