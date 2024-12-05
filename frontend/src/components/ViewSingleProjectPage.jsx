@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchDeleteProject, fetchProject, fetchProjects } from "../store/projects";
-import { Download, File, UserCircle2 } from "lucide-react";
+import { Ban, Download, File, UserCircle2 } from "lucide-react";
 import OpenModalButton from "./OpenModalButton";
 import DeleteProjectPopup from "./DeleteProjectPopup";
 import AddClientFormPopup from "./AddClientFormPopup";
@@ -54,16 +54,54 @@ const ClientCard = ({ client, onDelete }) => {
 };
 
 const FilesTable = ({ files }) => {
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const dispatch = useDispatch();
+
+  const toggleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedFiles(files.map((file) => file.id));
+    } else {
+      setSelectedFiles([]);
+    }
+  };
+
+  const toggleSelectFile = (e) => {
+    const fileId = parseInt(e.target.value, 10); // Ensure value is treated as a number
+    if (e.target.checked) {
+      setSelectedFiles([...selectedFiles, fileId]);
+    } else {
+      setSelectedFiles(selectedFiles.filter((id) => id !== fileId));
+    }
+  };
+
+  const handleDeleteFiles = async () => {
+    if (window.confirm("Are you sure you want to delete these files? This action cannot be undone!")) {
+      selectedFiles.forEach((fileId) => {
+        console.log(fileId);
+      });
+    }
+  };
+
   return (
     <section className="container w-full px-4 overflow-x-auto">
       <div className="sm:flex sm:items-center sm:justify-between">
         <h2 className="mb-2 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
           Files on this Project
         </h2>
-        <div className="flex items-center mt-4">
+        <div className="flex items-center gap-2 mt-4">
+          {selectedFiles.length > 0 && (
+            <button
+              onClick={handleDeleteFiles}
+              className="flex items-center w-1/2 px-5 py-2 text-sm transition-colors duration-200 bg-red-600 rounded-md hover:bg-red-600/90 text-neutral-200 sm:w-auto"
+            >
+              <Ban size={24} className="mr-2 " />
+              <span>Delete Selected</span>
+            </button>
+          )}
           <button className="flex items-center w-1/2 px-5 py-2 text-sm transition-colors duration-200 rounded-md text-neutral-800 bg-primary hover:bg-primary/90 sm:w-auto">
             <Download size={24} className="mr-2 " />
-            <span>Download All</span></button>
+            <span>Download All</span>
+          </button>
         </div>
       </div>
 
@@ -76,7 +114,7 @@ const FilesTable = ({ files }) => {
                   <tr>
                     <th scope="col" className="px-4 py-3.5 text-sm font-bold text-left  text-neutral-100">
                       <div className="flex items-center gap-3">
-                        <input type="checkbox" className="border rounded text-primary border-primary" />
+                        <input type="checkbox" className="border rounded text-primary border-primary" onChange={toggleSelectAll} checked={selectedFiles.length === files.length} />
                         <span>File Name</span>
                       </div>
                     </th>
@@ -90,7 +128,13 @@ const FilesTable = ({ files }) => {
                     <tr key={file.id}>
                       <td className="p-4 text-sm font-medium text-neutral-200 whitespace-nowrap">
                         <div className="inline-flex items-center gap-3">
-                          <input type="checkbox" className="border rounded text-primary border-primary" />
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 border rounded bg-neutral-98d00 border-neutral-700 text-primary checked:bg-neutral-800 checked:border-primary focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            checked={selectedFiles.includes(file.id)}
+                            onChange={toggleSelectFile}
+                            value={file.id}
+                          />
                           <div className="flex items-center gap-2">
                             <File className="size-4 text-primary" />
 
