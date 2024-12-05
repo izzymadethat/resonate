@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
-import { UNLOAD_FILE } from "../store/files";
+
 
 const btnStyle = "bg-primary border-0 text-neutral-800 p-2 rounded-md text-center text-sm inline-block cursor-pointer hover:bg-primary/80";
 
@@ -74,10 +74,6 @@ const AudioPlayer = () => {
     const handleSkipBack = () => {
         wavesurfer.current.skip(-5);
     };
-
-    if (loading) {
-
-    }
 
     return (
         <>

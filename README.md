@@ -5,15 +5,17 @@
 [![Postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)](https://sequelize.org/)
 [![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
 ## Overview
-
+[![Resonate Motto](/images/motto.png)](https://resonate-hr8p.onrender.com)
 Resonate is a platform that allows audio professionals to work with their clients with ease. The platform allows for project creation and management, and lets you create and manage clients. This way you won't have to worry about losing any clients!
 
 ## Features
 
 * Project creation and management
 * Client creation and management
+* Upload, Store, Stream, and Manage Project Audio Files
 * Secure authentication and authorization using JSON Web Tokens (JWT)
 
 ## Technology Stack
@@ -21,10 +23,11 @@ Resonate is a platform that allows audio professionals to work with their client
 * Frontend: React, React Router, Redux
 * Backend: Express, Sequelize, PostgreSQL, SQLite
 * ORM: Sequelize
+* Devops/Tooling: Docker
 * Database: PostgreSQL (production), SQLite (development)
 
 ## MVP Database Schema
-![Database Schema](/images/resonate_db_schema.png)
+![Database Schema](/images/res_schema_0.1.0.png)
 
 ## Frontend Routes
 
