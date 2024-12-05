@@ -39,7 +39,7 @@ function ProfileButton({ user }) {
     navigate("/");
   };
 
-  const ulClassName = "w-36 px-4 py-2 rounded-md absolute top-12 -right-24 bg-neutral-800" + (showMenu ? "" : " hidden");
+  const ulClassName = "w-56 px-4 py-2 rounded-md absolute top-12 -left-48 bg-neutral-800" + (showMenu ? "" : " hidden");
 
   return (
     <div className="relative">
@@ -49,14 +49,15 @@ function ProfileButton({ user }) {
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>
-              {user.firstName} {user.lastName}
-            </li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={logout} className="px-2 py-1 rounded-md cursor-pointer bg-primary text-neutral-800">Log Out</button>
-            </li>
+            <div className="flex flex-col items-center">
+              <li className="text-xl font-semibold">{user.username}</li>
+              {user.email == "reso-nator@demo.com" && <li className="w-[100px] px-2 py-1 text-sm text-center rounded-md text-neutral-800 hover:scale-95 cursor-default transition-all bg-gradient-to-r from-primary to-amber-600 my-2">Trial User</li>}
+              <li className="text-sm text-neutral-400">{user.email}</li>
+              <li className="my-4 text-sm text-neutral-400">
+                <button onClick={logout} className="px-2 py-1 rounded-md cursor-pointer bg-primary hover:bg-primary/90 text-neutral-800">Log Out</button>
+              </li>
+            </div>
+
           </>
         ) : (
           <>

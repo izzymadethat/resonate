@@ -3,6 +3,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const { requireAuth } = require("../../utils/auth");
 const { Project, Client } = require("../../db/models");
+const fileRoutes = require("./files");
 
 const router = express.Router();
 
@@ -15,6 +16,8 @@ const validateProject = [
     .withMessage("Description must be between 3 and 250 characters"),
   handleValidationErrors
 ];
+
+router.use("/:projectId/files", fileRoutes);
 
 // Get all user projects
 router.get("/", requireAuth, async (req, res, next) => {

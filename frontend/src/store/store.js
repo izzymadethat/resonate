@@ -3,11 +3,13 @@ import { thunk } from "redux-thunk";
 import sessionReducer from "./session";
 import projectReducer from "./projects";
 import clientReducer from "./clients";
+import filesReducer from "./files";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   projects: projectReducer,
-  clients: clientReducer
+  clients: clientReducer,
+  files: filesReducer
 });
 
 let enhancer;
