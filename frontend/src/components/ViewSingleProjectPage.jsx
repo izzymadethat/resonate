@@ -227,9 +227,9 @@ const ViewSingleProjectPage = () => {
   return (
     <div className="container px-24 py-8 mx-auto space-y-8">
       <section className="flex flex-col items-center lg:flex-row lg:justify-between">
-        <div className="text-center lg:text-left">
-          <h2 className="mb-4 text-3xl lg:mb-0">{project.title}</h2>
-          <p className="text-sm">
+        <div className="mb-2 text-center lg:text-left">
+          <h2 className="mb-2 text-3xl lg:mb-0">{project.title}</h2>
+          <p className="text-sm text-neutral-400">
             {project.description || "No description provided."}
           </p>
         </div>
@@ -244,6 +244,8 @@ const ViewSingleProjectPage = () => {
         </div>
       </section>
       <div className="flex flex-col gap-8">
+        <h2 className="text-3xl font-extrabold text-transparent uppercase bg-gradient-to-r from-primary via-amber-600 to-transparent bg-clip-text">Project Details</h2>
+        <div className="w-full h-4 mb-4 bg-gradient-to-r from-primary via-amber-600 to-transparent" />
         {/* View Clients */}
         <section className="h-full space-y-4">
           <div
@@ -258,7 +260,7 @@ const ViewSingleProjectPage = () => {
 
             />
           </div>
-          <div className="w-full h-4 mb-4 bg-gradient-to-r from-primary via-amber-600 to-transparent" />
+
 
           {project.Clients.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
