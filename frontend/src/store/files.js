@@ -5,6 +5,7 @@ const GET_FILES = "files/GET_FILES";
 const GET_STREAM_URL = "files/GET_STREAM_URL";
 const ADD_FILES = "files/ADD_FILES";
 const DELETE_FILES = "files/DELETE_FILES";
+const UNLOAD_FILE = "files/UNLOAD_FILE";
 
 const getFiles = (files) => ({
   type: GET_FILES,
@@ -118,6 +119,18 @@ const filesReducer = (state = initialState, action) => {
       return {
         ...state,
         files: state.files.filter((file) => !action.payload.includes(file.id))
+      };
+    case UNLOAD_FILE:
+      return {
+        ...state,
+        file: {
+          metadata: {},
+          duration: 0,
+          isPlaying: false,
+          currentTime: 0,
+          streamUrl: "",
+          downloadUrl: ""
+        }
       };
     default:
       return state;
