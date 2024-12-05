@@ -1,6 +1,6 @@
-import { CircleStop, Pause, Play, StepBack, StepForward } from "lucide-react";
-import { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { CircleStop, Loader2, Pause, Play, StepBack, StepForward } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 
@@ -8,10 +8,11 @@ const btnStyle = "bg-primary border-0 text-neutral-800 p-2 rounded-md text-cente
 
 
 const AudioPlayer = () => {
+    const dispatch = useDispatch();
     const waveformRef = useRef(null);
     const wavesurfer = useRef(null);
     const file = useSelector(state => state.files.file);
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Initialize wavesurfer when the component mounts
@@ -36,11 +37,13 @@ const AudioPlayer = () => {
             backend: "WebAudio"
         });
 
-        const audioUrl = file.streamUrl;
-        console.log("Audio URL loaded:", audioUrl);
         if (file.streamUrl) {
             // Load the audio file into wavesurfer
             wavesurfer.current.load(file.streamUrl);
+            setLoading(true);
+            wavesurfer.current.on("ready", () => {
+                setLoading(false);
+            });
         }
 
 
@@ -48,9 +51,10 @@ const AudioPlayer = () => {
         return () => {
             if (wavesurfer.current) {
                 wavesurfer.current.destroy();
+                dispatch({ type: "UNLOAD_FILE" });
             }
         };
-    }, [file.streamUrl]);
+    }, [file.streamUrl, dispatch]);
 
     // Button functions
     const handlePlayPause = () => {
@@ -69,17 +73,26 @@ const AudioPlayer = () => {
         wavesurfer.current.skip(-5);
     };
 
+    if (loading) {
+
+    }
+
     return (
-        <div className="container">
-            <div ref={waveformRef} className="cursor-pointer" />
-            {/* Audio controls */}
-            <div className="flex items-center justify-center gap-3 mt-4">
-                <button type="button" className={btnStyle} onClick={handleSkipBack}><StepBack /></button>
-                <button type="button" className={`${btnStyle} flex items-center`} onClick={handlePlayPause}><Play /><Pause /></button>
-                <button type="button" className={btnStyle} onClick={handleSkipForward}><StepForward /></button>
-                <button className={btnStyle} onClick={handleStop}><CircleStop /></button>
+        <>
+            {loading && <div className="flex items-center justify-center my-8">
+                <Loader2 className="animate-spin" size={64} />
+            </div>}
+            <div className="container">
+                <div ref={waveformRef} className="cursor-pointer" />
+                {/* Audio controls */}
+                <div className="flex items-center justify-center gap-3 my-4">
+                    <button type="button" className={btnStyle} onClick={handleSkipBack}><StepBack /></button>
+                    <button type="button" className={`${btnStyle} flex items-center`} onClick={handlePlayPause}><Play /><Pause /></button>
+                    <button type="button" className={btnStyle} onClick={handleSkipForward}><StepForward /></button>
+                    <button className={btnStyle} onClick={handleStop}><CircleStop /></button>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 export default AudioPlayer;
