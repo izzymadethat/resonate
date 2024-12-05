@@ -9,7 +9,7 @@ import AddClientFormPopup from "./AddClientFormPopup";
 import EditClientFormPopup from "./EditClientFormPopup";
 import { fetchDeleteClient } from "../store/clients";
 import FileUploader from "./FileUploader";
-import { deleteFiles, fetchFiles, fetchFileStreamUrl } from "../store/files";
+import { deleteFiles, fetchFiles, fetchFileStreamUrl, UNLOAD_FILE } from "../store/files";
 import AudioPlayer from "./AudioPlayer";
 
 function parseFileType(type) {
@@ -28,6 +28,10 @@ function parseFileType(type) {
       return type;
   }
 }
+
+const calculateProjectSize = (files) => {
+  return files.reduce((acc, file) => acc + file.size, 0);
+};
 
 const ClientCard = ({ client, onDelete }) => {
   const deleteClient = () => {
@@ -90,6 +94,7 @@ const FilesTable = ({ projectId, files }) => {
       const res = await dispatch(deleteFiles(projectId, selectedFiles));
       if (res.ok) {
         await dispatch(fetchFiles(projectId));
+        await dispatch({ type: UNLOAD_FILE });
         setSelectedFiles([]);
       } else {
         alert("Failed to delete files.");
@@ -177,6 +182,10 @@ const FilesTable = ({ projectId, files }) => {
                   ))}
                 </tbody>
               </table>
+              <p className="flex justify-end gap-2 px-4 py-2 text-sm font-bold text-primary">
+                Total Project Size:
+                <span>{(calculateProjectSize(files) / 1024 / 1024).toFixed(2)} MB</span>
+              </p>
             </div>
           </div>
         </div>

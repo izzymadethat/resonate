@@ -5,7 +5,7 @@ const GET_FILES = "files/GET_FILES";
 const GET_STREAM_URL = "files/GET_STREAM_URL";
 const ADD_FILES = "files/ADD_FILES";
 const DELETE_FILES = "files/DELETE_FILES";
-const UNLOAD_FILE = "files/UNLOAD_FILE";
+export const UNLOAD_FILE = "files/UNLOAD_FILE";
 
 const getFiles = (files) => ({
   type: GET_FILES,

@@ -84,7 +84,6 @@ const FileUploader = ({ className, projectId }) => {
             if (res.ok) {
                 setFiles([]);
                 setRejected([]);
-                alert("Files uploaded successfully");
             }
         } catch (error) {
             setErrors({ error: parseFileErrorMessage(error) });
@@ -158,8 +157,8 @@ const FileUploader = ({ className, projectId }) => {
                                         <span className="text-sm font-medium text-primary">{file.size / 1024 / 1024 > 1 ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : `${(file.size / 1024).toFixed(2)} KB`}</span>
                                     </li>
                                 ))}
-                                {files.length > 4 && (
-                                    <p className="text-sm font-bold">...+{files.length - 4} more</p>
+                                {files.length > 3 && (
+                                    <p className="text-sm font-bold">...+{files.length - 3} more</p>
                                 )}
 
                             </>
@@ -196,7 +195,7 @@ const FileUploader = ({ className, projectId }) => {
                                 (
                                     <>
                                         {
-                                            rejected.slice(0, 4).map(({ file, errors }) => (
+                                            rejected.slice(0, 3).map(({ file, errors }) => (
                                                 <li key={file.name} className="relative w-full h-full p-6 transition-transform duration-200 rounded-md cursor-pointer bg-neutral-800 hover:scale-95">
                                                     <p className="mt-2 text-sm font-medium text-neutral-300">{file.name}</p>
                                                     <button type="button" className="absolute z-30 p-1 rounded-full hover:bg-red-600 top-2 right-2" onClick={() => removeRejectedFile(file.name)}>
@@ -210,8 +209,8 @@ const FileUploader = ({ className, projectId }) => {
                                                 </li>
                                             ))
                                         }
-                                        {rejected.length > 4 && (
-                                            <p className="text-sm font-bold">...+{rejected.length - 4} more</p>
+                                        {rejected.length > 3 && (
+                                            <p className="text-sm font-bold">...+{rejected.length - 3} more</p>
                                         )}
                                     </>
                                 )
