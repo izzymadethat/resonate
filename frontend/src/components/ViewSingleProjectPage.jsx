@@ -10,6 +10,7 @@ import EditClientFormPopup from "./EditClientFormPopup";
 import { fetchDeleteClient } from "../store/clients";
 import FileUploader from "./FileUploader";
 import { fetchFiles } from "../store/files";
+import AudioPlayer from "./AudioPlayer";
 
 function parseFileType(type) {
   const extension = type.split("/")[1];
@@ -84,6 +85,7 @@ const FilesTable = ({ files }) => {
 
   return (
     <section className="container w-full px-4 overflow-x-auto">
+      <AudioPlayer audioUrl={"/test.mp3"} />
       <div className="sm:flex sm:items-center sm:justify-between">
         <h2 className="mb-2 text-xl font-extrabold text-center uppercase pointer-events-none lg:text-left text-neutral-300">
           Files on this Project
