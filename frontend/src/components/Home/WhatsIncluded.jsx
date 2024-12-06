@@ -1,4 +1,4 @@
-import { FolderUp, MessagesSquare, Users, UserCircle2, Lock, MessageCircleQuestion } from "lucide-react";
+import { FolderUp, MessagesSquare, Lock, MessageCircleQuestion } from "lucide-react";
 const WhatsIncluded = () => {
     return (
         <section className="py-12" id="whats-included">
