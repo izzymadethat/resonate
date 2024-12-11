@@ -9,7 +9,43 @@
 
 ## Overview
 [![Resonate Motto](/images/motto.png)](https://resonate-hr8p.onrender.com)
+
 Resonate is a platform that allows audio professionals to work with their clients with ease. The platform allows for project creation and management, and lets you create and manage clients. This way you won't have to worry about losing any clients!
+
+![Resonate Overview Client View](/images/overview-1.png)
+![Resonate Overview Projects View](/images/overview-2.png)
+
+## Installation and Setup
+
+1. Clone the repository: 
+    ```bash
+    git clone https://github.com/izzymadethat/resonate.git
+    ```
+    `via ssh`
+    ```bash
+    git clone git@github.com:izzymadethat/resonate.git
+    ```
+2. Install dependencies in both folders: `npm install`
+    ```
+    cd backend
+    npm install
+    cd ../frontend
+    npm install
+    ```
+3. Start the development servers:
+    - ***Pre-requisite:*** Make sure Docker is installed on your computer
+    ```bash
+    cd ... # or make sure you're in the ROOT directory
+    docker compose up -d
+    ```
+
+4. Create environment variables in the backend directory (an example .env has been provided)
+    ```bash
+    cd backend
+    cp .env.example .env # copies pre-existing .env.example into a new .env file that does NOT get uploaded to Github 
+    ```
+    - add the necessary environment variables to run the app in development.
+
 
 ## Features
 
@@ -23,7 +59,7 @@ Resonate is a platform that allows audio professionals to work with their client
 * Frontend: React, React Router, Redux
 * Backend: Express, Sequelize, PostgreSQL, SQLite
 * ORM: Sequelize
-* Devops/Tooling: Docker
+* Devops/Tooling: Docker, AWS
 * Database: PostgreSQL (production), SQLite (development)
 
 ## MVP Database Schema
@@ -57,19 +93,9 @@ Resonate is a platform that allows audio professionals to work with their client
 * POST `/api/session`: Create new user session
 * DELETE `/api/session`: Delete user session
 
-## Installation
-
-1. Clone the repository: `git clone https://github.com/izzymadethat/resonate.git`
-2. Install dependencies in both folders: `npm install`
-3. Start the development server: `npm start`
-
 ## Contributing
 
 Contributions are welcome! Please submit a pull request with your changes.
-
-## License
-
-This project is licensed under the ISC License.
 
 ## Acknowledgments
 
